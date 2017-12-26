@@ -62,13 +62,15 @@ class NewsSpider(scrapy.Spider):
 
     def parse_news_part2(self, response):
         item = NewsItem()
-        item['news_url'] = response.meta['news_url']
-        item['category'] = response.meta['category']
+        item['news_id'] = response.meta['news_id']
         item['title'] = response.meta['title']
-        item['keyword'] = response.meta['keyword']
-        item['comment_url'] = response.meta['comment_url']
-        item['source'] = response.meta['source']
+        item['category'] = response.meta['category']
         item['content'] = response.meta['content']
+        item['release_time'] = response.meta['release_time']
+        item['keyword'] = response.meta['keyword']
+        item['source'] = response.meta['source']
+        item['news_url'] = response.meta['news_url']
+        item['comment_url'] = response.meta['comment_url']
         data = json.loads(response.body.decode())
         # item['news_id'] = data["result"]["news"]["newsid"]
         # item['title'] = data["result"]["news"]["title"]
@@ -90,13 +92,13 @@ class NewsSpider(scrapy.Spider):
         if comm_list:
             for comm in comm_list:
                 item = NewsCommentItem()
-                item['news_id'] = comm["newsid"]
                 item['comment_id'] = comm["comment_mid"]
+                item['news_id'] = comm["newsid"]
                 item['content'] = comm["content"]
                 item['create_time'] = comm["time"]
                 item['vote_num'] = int(comm["agree"])
                 item['against_num'] = int(comm["against"])
                 item['user_id'] = comm["uid"]
-                item['user_nickname'] = comm["nick"]
                 item['user_location'] = comm["area"]
+                item['user_nickname'] = comm["nick"]
                 yield item
