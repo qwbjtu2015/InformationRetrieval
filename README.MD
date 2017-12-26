@@ -13,6 +13,10 @@
 	操作方法：
 		打开/InformationRetrival/news_sina/news_sina/spiders/NewsSpider.py
 		修改month和day两个列表内容来确定爬取哪些天的新闻
+		
+		打开/InformationRetrival/news_sina/news_sina/piplines.py
+		修改第25行，Mysql的用户名、密码、数据库名称（sina）
+
 		打开cmd，cd /InformationRetrival/news_sina
 		输入scrapy crawl news运行爬虫（一天的新闻爬取大概2~3小时）
 

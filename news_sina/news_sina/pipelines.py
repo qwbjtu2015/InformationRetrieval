@@ -33,9 +33,9 @@ class NewsSinaPipeline(object):
             self.news_row_num = self.cursor.fetchone()[0]
             self.cursor.execute("SELECT id FROM comments ORDER BY id DESC LIMIT 1;")
             self.comments_row_num = self.cursor.fetchone()[0]
-            # self.news_row_num = 0
-            # self.comments_row_num = 0
         except:
+            self.news_row_num = 0
+            self.comments_row_num = 0
             log.msg("Get row_num Failed ! ! !",level=log.ERROR)
         # lock = threading.RLock()
 

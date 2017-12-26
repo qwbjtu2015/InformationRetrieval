@@ -13,7 +13,7 @@ class NewsSpider(scrapy.Spider):
     # month = list(range(8,13))
     # day = list(range(1,31))
     month = [8]
-    day = [10,11]
+    day = [13]
     start_urls=[]
 
     for i in month:
@@ -55,8 +55,17 @@ class NewsSpider(scrapy.Spider):
         item['news_id'] = url_join[1]
         content = response.xpath('//*[@id="artibody"]//p/text()').extract()
         content = ''.join(content)
-        content = content.strip().replace('\u3000', ' ')
-        item['content'] = content
+        content = content.strip().replace('\u3000', '')
+        content = content.replace('\n','')
+        if content != '':
+            item['content'] = content
+        else:
+            content = response.xpath('//*[@id="artibody"]//span/text()').extract()
+            content = ''.join(content)
+            content = content.strip().replace('\u3000', '')
+            content = content.replace('\n','')
+            item['content'] = content
+
         yield scrapy.Request(item['comment_spider_url'], meta=item, callback=self.parse_news_part2)
 
 
@@ -102,3 +111,5 @@ class NewsSpider(scrapy.Spider):
                 item['user_location'] = comm["area"]
                 item['user_nickname'] = comm["nick"]
                 yield item
+
+
