@@ -26,13 +26,13 @@
 			  title      varchar    新闻标题     非空
 			category     varchar    新闻类别
 			 content      text      新闻正文
-		  release_time   varchar    发布时间
-		     keyword     varchar     关键词
-		     source      varchar    新闻来源
-		    join_num       int    新闻参与人数
-		   comment_num     int       评论量
-		     news_url    varchar     新闻url
-		   comment_url   varchar     评论url
+		  		release_time   varchar    发布时间
+		     	keyword     varchar     关键词
+		     	source      varchar    新闻来源
+		    	join_num       int    新闻参与人数
+		   		comment_num     int       评论量
+		    	news_url    varchar     新闻url
+		   		comment_url   varchar     评论url
 
 
 		commentss表结构
@@ -41,12 +41,12 @@
 			comment_id   varchar    评论编号   唯一性验证
 			 news_id     varchar    新闻编号     非空
 			 content      text      评论内容     非空
-		   create_time   varchar    发布时间
-		    vote_num       int       赞同数
-		   against_num     int       反对数
-		     user_id     varchar    评论者id
-		  user_location  varchar    评论者地区
-		  user_nickname  varchar    评论者昵称
+		   		create_time   varchar    发布时间
+		    	vote_num       int       赞同数
+		   		against_num     int       反对数
+		     	user_id     varchar    评论者id
+		  		user_location  varchar    评论者地区
+		  		user_nickname  varchar    评论者昵称
 
 （二）索引构建
 
