@@ -68,7 +68,7 @@ ITEM_PIPELINES = {
    'news_sina.pipelines.NewsSinaPipeline': 300,
 
 }
-LOG_ENABLED = False
+#LOG_ENABLED = False
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

@@ -17,8 +17,12 @@
 		打开/InformationRetrival/news_sina/news_sina/piplines.py
 		修改第25行，Mysql的用户名、密码、数据库名称（sina）
 
+		数据库和表的创建，可以按照下面列出的表结构自行创建，或者运行我上传的news.sql和comments.sql文件建立表结构
+
 		打开cmd，cd /InformationRetrival/news_sina
 		输入scrapy crawl news运行爬虫（一天的新闻爬取大概2~3小时）
+
+
 
 	Python3：Scrapy、demjson、PyMySQL
 
