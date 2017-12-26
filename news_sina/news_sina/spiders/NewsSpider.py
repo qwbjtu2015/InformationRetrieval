@@ -1,6 +1,7 @@
 import scrapy
 import json
 import demjson
+import time
 # from InfromationRetrival.news_sina.news_sina.items import NewsItem
 # from InfromationRetrival.news_sina.news_sina.items import NewsCommentItem
 from news_sina.items import NewsItem
@@ -12,7 +13,7 @@ class NewsSpider(scrapy.Spider):
     # month = list(range(8,13))
     # day = list(range(1,31))
     month = [8]
-    day = [2]
+    day = [10,11]
     start_urls=[]
 
     for i in month:
@@ -34,18 +35,24 @@ class NewsSpider(scrapy.Spider):
             news_category = news["channel"]["title"]
             news_title = news["title"]
             news_url = news["url"]
-            yield scrapy.Request(news_url, meta = {'category':news_category,'title':news_title}, callback=self.parse_news_part1)
+            news_time = news["time"]
+            news_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(news_time))
+            yield scrapy.Request(news_url, meta = {'category':news_category,'title':news_title,'time':news_time}, callback=self.parse_news_part1)
 
 
 
     def parse_news_part1(self, response):
         item = {}
         item['category'] = response.meta['category']
+        item['title'] = response.meta['title']
+        item['release_time'] = response.meta['time']
         item['keyword'] = response.xpath('//meta[@name="keywords"]/@content').extract()[0]
         url_join = response.xpath('//meta[@name="comment"]/@content').extract()[0].split(':')
         item['comment_url'] = "http://comment5.news.sina.com.cn/comment/skin/default.html?channel="+url_join[0]+"&newsid="+url_join[1]
         item['source'] = response.xpath('//meta[@name="mediaid"]/@content').extract()[0]
         item['comment_spider_url'] = "http://comment5.news.sina.com.cn/page/info?version=1&format=json&channel="+url_join[0]+"&newsid="+url_join[1]+"&compress=0&ie=gbk&oe=gbk&page=1&page_size=20"
+        item['news_url'] = response.url
+        item['news_id'] = url_join[1]
         content = response.xpath('//*[@id="artibody"]//p/text()').extract()
         content = ''.join(content)
         content = content.strip().replace('\u3000', ' ')
@@ -55,16 +62,18 @@ class NewsSpider(scrapy.Spider):
 
     def parse_news_part2(self, response):
         item = NewsItem()
+        item['news_url'] = response.meta['news_url']
         item['category'] = response.meta['category']
+        item['title'] = response.meta['title']
         item['keyword'] = response.meta['keyword']
         item['comment_url'] = response.meta['comment_url']
         item['source'] = response.meta['source']
         item['content'] = response.meta['content']
         data = json.loads(response.body.decode())
-        item['news_id'] = data["result"]["news"]["newsid"]
-        item['title'] = data["result"]["news"]["title"]
-        item['news_url'] = data["result"]["news"]["url"]
-        item['release_time'] = data["result"]["news"]["time"]
+        # item['news_id'] = data["result"]["news"]["newsid"]
+        # item['title'] = data["result"]["news"]["title"]
+        # item['news_url'] = data["result"]["news"]["url"]
+        # item['release_time'] = data["result"]["news"]["time"]
         item['join_num'] = data["result"]["count"]["total"]
         item['comment_num'] = data["result"]["count"]["show"]
 
@@ -78,15 +87,16 @@ class NewsSpider(scrapy.Spider):
     def parse_comment(self, response):
         data = json.loads(response.body.decode())
         comm_list = data["result"]["cmntlist"]
-        for comm in comm_list:
-            item = NewsCommentItem()
-            item['news_id'] = comm["newsid"]
-            item['comment_id'] = comm["comment_mid"]
-            item['content'] = comm["content"]
-            item['create_time'] = comm["time"]
-            item['vote_num'] = int(comm["agree"])
-            item['against_num'] = int(comm["against"])
-            item['user_id'] = comm["uid"]
-            item['user_nickname'] = comm["nick"]
-            item['user_location'] = comm["area"]
-            yield item
+        if comm_list:
+            for comm in comm_list:
+                item = NewsCommentItem()
+                item['news_id'] = comm["newsid"]
+                item['comment_id'] = comm["comment_mid"]
+                item['content'] = comm["content"]
+                item['create_time'] = comm["time"]
+                item['vote_num'] = int(comm["agree"])
+                item['against_num'] = int(comm["against"])
+                item['user_id'] = comm["uid"]
+                item['user_nickname'] = comm["nick"]
+                item['user_location'] = comm["area"]
+                yield item
