@@ -2,6 +2,7 @@ import scrapy
 import json
 import demjson
 import time
+from snownlp import SnowNLP
 # from InfromationRetrival.news_sina.news_sina.items import NewsItem
 # from InfromationRetrival.news_sina.news_sina.items import NewsCommentItem
 from news_sina.items import NewsItem
@@ -65,7 +66,8 @@ class NewsSpider(scrapy.Spider):
             content = content.strip().replace('\u3000', '')
             content = content.replace('\n','')
             item['content'] = content
-
+        if item['content'] == '':
+            return
         yield scrapy.Request(item['comment_spider_url'], meta=item, callback=self.parse_news_part2)
 
 
@@ -81,10 +83,6 @@ class NewsSpider(scrapy.Spider):
         item['news_url'] = response.meta['news_url']
         item['comment_url'] = response.meta['comment_url']
         data = json.loads(response.body.decode())
-        # item['news_id'] = data["result"]["news"]["newsid"]
-        # item['title'] = data["result"]["news"]["title"]
-        # item['news_url'] = data["result"]["news"]["url"]
-        # item['release_time'] = data["result"]["news"]["time"]
         item['join_num'] = data["result"]["count"]["total"]
         item['comment_num'] = data["result"]["count"]["show"]
 
@@ -104,6 +102,15 @@ class NewsSpider(scrapy.Spider):
                 item['comment_id'] = comm["mid"]
                 item['news_id'] = comm["newsid"]
                 item['content'] = comm["content"]
+                # 评论内容情感分析
+                # if item['content'] == "":
+                #     return
+                # else:
+                score = SnowNLP(item['content'])
+                if score.sentiments > 0.5:
+                    item['pos_or_neg'] = 1
+                else:
+                    item['pos_or_neg'] = 0
                 item['create_time'] = comm["time"]
                 item['vote_num'] = int(comm["agree"])
                 item['against_num'] = int(comm["against"])

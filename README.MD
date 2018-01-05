@@ -33,7 +33,7 @@
 			 news_id     varchar    新闻编号   唯一性验证
 			  title      varchar    新闻标题     非空
 			category     varchar    新闻类别
-			 content      text      新闻正文
+			 content      text      新闻正文     非空
 		  	release_time   varchar    发布时间
 		     	keyword     varchar     关键词
 		     	source      varchar    新闻来源
@@ -52,6 +52,7 @@
 		   	create_time   varchar    发布时间
 		    	vote_num       int       赞同数
 		   	against_num     int       反对数
+		   	pos_or_neg		int        褒或贬     非空
 		     	user_id     varchar    评论者id
 		  	user_location  varchar    评论者地区
 		  	user_nickname  varchar    评论者昵称

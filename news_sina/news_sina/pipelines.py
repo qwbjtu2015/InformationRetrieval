@@ -20,8 +20,8 @@ class NewsSinaPipeline(object):
                             "keyword, news_url, comment_url, source, join_num, comment_num) VALUES "
                             "(%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s', %d, %d);")
         self.INSERT_COMMENT = ("INSERT INTO comments (id,news_id, comment_id, content,create_time,"
-                               "vote_num,against_num,user_id,user_location,"
-                               "user_nickname) VALUES (%d, '%s', '%s', '%s', '%s', %d, %d, '%s', '%s', '%s');")
+                               "vote_num,against_num,pos_or_neg,user_id,user_location,"
+                               "user_nickname) VALUES (%d, '%s', '%s', '%s', '%s', %d, %d, %d, '%s', '%s', '%s');")
         self.conn=MySQLdb.connect(user='root', passwd='qin123456', db='sina', autocommit=True)
         self.conn.set_character_set('utf8')
         self.cursor = self.conn.cursor()
@@ -71,11 +71,12 @@ class NewsSinaPipeline(object):
             create_time = item['create_time']  # 评论时间
             vote_num = item['vote_num']  # 顶/赞同数量
             against_num = item['against_num']  # 踩/反对数量
+            pos_or_neg = item['pos_or_neg']
             user_id = item['user_id']  # 评论者id
             user_location = item['user_location']  # 评论者地址
             user_nickname = item['user_nickname']  # 评论者昵称
             # 数据插入数据库
-            comment=(self.comments_row_num+1,news_id,comment_id,content,create_time,vote_num,against_num,user_id,user_location,user_nickname)
+            comment=(self.comments_row_num+1,news_id,comment_id,content,create_time,vote_num,against_num,pos_or_neg,user_id,user_location,user_nickname)
             try:
                 self.cursor.execute(self.INSERT_COMMENT % comment)
                 self.comments_row_num += 1

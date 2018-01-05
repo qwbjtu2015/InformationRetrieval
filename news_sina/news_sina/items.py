@@ -23,6 +23,7 @@ class NewsItem(scrapy.Item):
     comment_url = scrapy.Field()  # 新闻评论爬取URL
 
 
+
     def __repr__(self):
         """only print out attr1 after exiting the Pipeline"""
         return repr({})
@@ -37,6 +38,7 @@ class NewsCommentItem(scrapy.Item):
     user_id = scrapy.Field()  # 评论者id
     user_location = scrapy.Field()  # 评论者地址
     user_nickname = scrapy.Field()  # 评论者昵称
+    pos_or_neg = scrapy.Field()  # 评论褒或贬
 
 
     def __repr__(self):
