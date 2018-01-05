@@ -10,10 +10,10 @@ from news_sina.items import NewsCommentItem
 
 class NewsSpider(scrapy.Spider):
     name = "news"
-    # month = list(range(8,13))
-    # day = list(range(1,31))
-    month = [8]
-    day = [13]
+    month = list(range(8,13))
+    day = list(range(1,32))
+    # month = [12]
+    # day = [31]
     start_urls=[]
 
     for i in month:
@@ -101,7 +101,7 @@ class NewsSpider(scrapy.Spider):
         if comm_list:
             for comm in comm_list:
                 item = NewsCommentItem()
-                item['comment_id'] = comm["comment_mid"]
+                item['comment_id'] = comm["mid"]
                 item['news_id'] = comm["newsid"]
                 item['content'] = comm["content"]
                 item['create_time'] = comm["time"]
